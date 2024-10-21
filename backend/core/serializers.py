@@ -16,7 +16,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = '__all__'
@@ -27,17 +26,17 @@ class SignInSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta: 
-        models = User
-        fields = ['email', 'username', 'password', 'password2']
+        model = User
+        fields = ['username', 'email', 'password', 'password2']
 
     def validate(self, attrs):
-        if (attrs['password'] != attrs['password2']):
+        if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({'Password', 'Password does not match'})
         return attrs
     
     def create(self, validated_data):
         user = User.objects.create(
-            useranme=validated_data['username'],
+            username=validated_data['username'],
             email=validated_data['email']
         )
         user.set_password(validated_data['password'])
