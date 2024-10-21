@@ -1,8 +1,11 @@
 import {createContext, useState, useEffect} from 'react'
-import jwt_decode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 import {useNavigate} from 'react-router-dom'
+import Swal from 'sweetalert2'
 
-const swal = require('sweetalert2')
+import NavBar from '../components/NavBar'
+import { Outlet } from 'react-router-dom'
+
 
 const AuthContext = createContext()
 export default AuthContext
@@ -15,7 +18,7 @@ export const AuthProvider = () => {
 
     const [user, setUser] = useState(() => 
         localStorage.getItem('authTokens') 
-            ? jwt_decode(localStorage.getItem('authTokens'))
+            ? jwtDecode(localStorage.getItem('authTokens'))
             : null
     )
 
@@ -38,10 +41,10 @@ export const AuthProvider = () => {
 
         if (response.status === 200){
             setAuthTokens(data)
-            setUser(jwt_decode(data.access))
+            setUser(jwtDecode(data.access))
             localStorage.setItem("authTokens", JSON.stringify(data))
             navigate('/')
-            swal.fire({
+            Swal.fire({
                 title: "Login Successful",
                 icon: "success",
                 toast: true,
@@ -53,7 +56,7 @@ export const AuthProvider = () => {
         } else {
             console.log(response.status)
             console.log("there was a server issue")
-            swal.fire({
+            Swal.fire({
                 title: "Username or password does not exist",
                 icon: "error",
                 toast: true,
@@ -81,7 +84,7 @@ export const AuthProvider = () => {
 
         if (response.status === 201) {
             navigate('/login')
-            swal.fire({
+            Swal.fire({
                 title: "Registration successfull, Login now",
                 icon: "success",
                 toast: true,
@@ -93,7 +96,7 @@ export const AuthProvider = () => {
         } else {
             console.log(response.status)
             console.log("there was a server issue")
-            swal.fire({
+            Swal.fire({
                 title: "An error Occured" + response.status,
                 icon: "error",
                 toast: true,
@@ -110,7 +113,7 @@ export const AuthProvider = () => {
         setUser(null)
         localStorage.removeItem("authTokens")
         navigate('/login')
-        swal.fire({
+        Swal.fire({
             title: "You have been logged out!",
             icon: "success",
             toast: true,
@@ -133,7 +136,7 @@ export const AuthProvider = () => {
 
     useEffect(() => {
         if (authTokens) {
-            setUser(jwt_decode(authTokens.access))
+            setUser(jwtDecode(authTokens.access))
         }
         setLoading(false)
     }, [authTokens, loading])
@@ -141,6 +144,8 @@ export const AuthProvider = () => {
     return (
         <AuthContext.Provider value={contextData}>
             {loading}
+            <NavBar />
+            <Outlet />
         </AuthContext.Provider>
     )
 }
