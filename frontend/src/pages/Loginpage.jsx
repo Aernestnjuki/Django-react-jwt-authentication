@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import AuthContext from '../context/AuthContext'
 
 const Loginpage = () => {
+
+
+  const {loginUser} = useContext(AuthContext)
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const email = e.target.email.value
+    const password = e.target.password.value
+
+    email.length > 0 && loginUser(email, password)
+  }
+
+
+
   return (
     <section className="vh-100" style={{ backgroundColor: "#9A616D" }}>
     <div className="container py-5 h-100">
@@ -19,7 +33,7 @@ const Loginpage = () => {
               </div>
               <div className="col-md-6 col-lg-7 d-flex align-items-center">
                 <div className="card-body p-4 p-lg-5 text-black">
-                  <form >
+                  <form onSubmit={handleSubmit}>
                     <div className="d-flex align-items-center mb-3 pb-1">
                       <i
                         className="fas fa-cubes fa-2x me-3"
