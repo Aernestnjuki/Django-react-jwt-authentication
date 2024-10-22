@@ -1,7 +1,21 @@
-import React from 'react'
+import { jwtDecode } from 'jwt-decode'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import AuthContext from '../context/AuthContext'
 
 const NavBar = () => {
+
+  const {logoutUser} = useContext(AuthContext)
+  const token = localStorage.getItem("authTokens")
+
+  if (token){
+    const decodedToken = jwtDecode(token)
+    var user_id = decodedToken.user_id
+    console.log(decodedToken)
+  }
+
+
+
   return (
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
@@ -16,7 +30,7 @@ const NavBar = () => {
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
-              {/* {token === null &&  */}
+              {token === null && 
               <>
                 <li class="nav-item">
                   <Link class="nav-link" to="/login">Login</Link>
@@ -25,18 +39,18 @@ const NavBar = () => {
                   <Link class="nav-link" to="/register">Register</Link>
                 </li>
               </>
-              {/* } */}
+            } 
 
-            {/* {token !== null &&  */}
+            {token !== null && 
               <>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  {/* <a class="nav-link" onClick={logoutUser} style={{cursor:"pointer"}}>Logout</a> */}
+                  <a class="nav-link" onClick={logoutUser} style={{cursor:"pointer"}}>Logout</a>
                 </li>
               </>
-              {/* }    */}
+            }
               
             </ul>
           </div>
